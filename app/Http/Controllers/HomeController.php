@@ -31,7 +31,7 @@ class HomeController extends Controller
                 ->orWhere('link', 'like', $search)
                 ->where('location', '=', $location)
                 ->orderBy('id', 'asc')
-                ->paginate(3);
+                ->paginate(8);
             }
 
             if($search && !$location){
@@ -46,13 +46,13 @@ class HomeController extends Controller
                 ->orWhere('whatVolunteerDoes', 'like', $search)
                 ->orWhere('link', 'like', $search)                
                 ->orderBy('id', 'asc')
-                ->paginate(3);
+                ->paginate(8);
             }
 
             if($location && !$search){
                 $volunteerLists = Volunteer::where('location', '=', $location)                
                 ->orderBy('id', 'asc')
-                ->paginate(3);
+                ->paginate(8);
             }            
         } else {
             $volunteerLists = Volunteer::orderBy('id', 'asc')->paginate(8);
@@ -200,5 +200,55 @@ class HomeController extends Controller
 
     public function contactUs(){
         return view('contactUs');
+    }
+
+    public function fetchData(Request $request) {
+        if($request->ajax())
+        {
+            $search = $request['search'] ?? '';
+            $location = $request['location'] && $request['location'] !== 'Select Location' ?? '';
+
+            if($search || $location){
+                if($search && $location){
+                    $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
+                    ->orWhere('summary', 'like', $search)
+                    ->orWhere('shortDescription', 'like', $search)
+                    ->orWhere('email', 'like', $search)
+                    ->orWhere('criteria', 'like', $search)
+                    ->orWhere('whereLocation', 'like', $search)
+                    ->orWhere('dateAndTime', 'like', $search)
+                    ->orWhere('timeCommitment', 'like', $search)
+                    ->orWhere('whatVolunteerDoes', 'like', $search)
+                    ->orWhere('link', 'like', $search)
+                    ->where('location', '=', $location)
+                    ->orderBy('id', 'asc')
+                    ->paginate(8);
+                }
+
+                if($search && !$location){
+                    $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
+                    ->orWhere('summary', 'like', $search)
+                    ->orWhere('shortDescription', 'like', $search)
+                    ->orWhere('email', 'like', $search)
+                    ->orWhere('criteria', 'like', $search)
+                    ->orWhere('whereLocation', 'like', $search)
+                    ->orWhere('dateAndTime', 'like', $search)
+                    ->orWhere('timeCommitment', 'like', $search)
+                    ->orWhere('whatVolunteerDoes', 'like', $search)
+                    ->orWhere('link', 'like', $search)                
+                    ->orderBy('id', 'asc')
+                    ->paginate(8);
+                }
+
+                if($location && !$search){
+                    $volunteerLists = Volunteer::where('location', '=', $location)                
+                    ->orderBy('id', 'asc')
+                    ->paginate(8);
+                }            
+            } else {
+                $volunteerLists = Volunteer::orderBy('id', 'asc')->paginate(8);
+            }  
+            return view('load', ['volunteerLists' => $volunteerLists])->render();
+        }
     }
 }

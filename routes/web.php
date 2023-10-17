@@ -44,3 +44,5 @@ Route::get('/clear-cache', function () {
 Route::get('/fb/login', [SocialController::class, 'redirectToProvider']);
 Route::get('/fb/callback', [SocialController::class, 'handleProviderCallback']);
 Route::get('/fb/getPages', [SocialController::class, 'getPages']);
+
+Route::post('/pagination/fetch_data', [HomeController::class, 'fetchData']);

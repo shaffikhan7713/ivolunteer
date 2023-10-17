@@ -80,6 +80,7 @@
 
     <div class="tm-section tm-container-inner btn-warning">
         <form id="opportunity-search-form" class="searchvo p-4 mb-3" action="" method="get">
+            @csrf
             <h5 style="color: white; mb-2">Volunteer Opportunity Search</h5>
             <div class="row">
                 <div class="col-md-4">
@@ -87,7 +88,6 @@
                         <input type="search" name="search" class="form-control" placeholder="Enter to search"
                             aria-label="Enter to search" value="{{ $search }}" />
                     </div>
-
                 </div>
                 <div class="col-md-4">
                     <select class="form-select" name="location" aria-label="Default select example">
@@ -114,37 +114,20 @@
         </form>
     </div>
 
-    <!-- Gallery -->
+
+
+    @if(count($volunteerLists) > 0)
+    <div id="articles">
+        @include('load')
+    </div>
+    @else
     <div class="row tm-gallery">
         <!-- gallery page 1 -->
         <div id="tm-gallery-page-pizza" class="tm-gallery-page">
-            @if(count($volunteerLists) > 0)
-            @foreach($volunteerLists as $volunteer)
-            <a href="/product/{{ $volunteer['seoUri'] }}/{{ $volunteer['id'] }}" id="volunteer">
-                <article class="col-lg-3 tm-gallery-item tm-contact-link">
-                    <figure>
-                        @if($volunteer['mainImage'] !== '')
-                        <img src="uploads/{{ $volunteer['mainImage']}}" alt="Image" class="img-fluid tm-gallery-img" />
-                        @else
-                        <img src="uploads/01.jpg" alt="Image" class="img-fluid tm-gallery-img" />
-                        @endif
-                        <figcaption>
-                            <h4 class="tm-gallery-title">{{ $volunteer['title'] }}</h4>
-                            <p class="tm-gallery-description">{{ $volunteer['shortDescription'] }}</p>
-                            <!-- <p class="tm-gallery-price">$45 / $55</p> -->
-                        </figcaption>
-                    </figure>
-                </article>
-            </a>
-            @endforeach
-            @else
             <p>No Records Found</p>
-            @endif
-        </div> <!-- gallery page 1 -->
-        <div class="row text-center" style="margin-left: 40%;">
-            {{ $volunteerLists->links('pagination::bootstrap-4') }}
         </div>
     </div>
+    @endif
     <!-- <div class="tm-section tm-container-inner">
         <div class="row">
             <div class="col-md-6">
@@ -167,6 +150,18 @@
 </main>
 
 <script>
+function fetch_data(page) {
+    $.ajax({
+        url: "/pagination/fetch_data?page=" + page,
+        type: 'POST',
+        data: $('#opportunity-search-form').serialize()
+    }).done(function(data) {
+        $('#articles').html(data);
+    }).fail(function() {
+        alert('Articles could not be loaded.');
+    });
+}
+
 $(document).ready(function() {
     var owl = $('.owl-carousel');
     owl.owlCarousel({
@@ -177,6 +172,18 @@ $(document).ready(function() {
         autoplayTimeout: 5000,
         autoplayHoverPause: true
     });
-})
+
+    $(document).on('click', '.pagination a', function(event) {
+        event.preventDefault();
+
+        $('#load a').css('color', '#dfecf6');
+        $('#load').append(
+            '<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="/img/loading.gif" />'
+        );
+
+        var page = $(this).attr('href').split('page=')[1];
+        fetch_data(page);
+    });
+});
 </script>
 @endsection
