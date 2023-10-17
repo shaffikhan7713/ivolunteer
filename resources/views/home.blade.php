@@ -88,6 +88,7 @@
                         <input type="search" name="search" class="form-control" placeholder="Enter to search"
                             aria-label="Enter to search" value="{{ $search }}" />
                     </div>
+
                 </div>
                 <div class="col-md-4">
                     <select class="form-select" name="location" aria-label="Default select example">
@@ -113,8 +114,6 @@
             </div>
         </form>
     </div>
-
-
 
     @if(count($volunteerLists) > 0)
     <div id="articles">
@@ -161,7 +160,6 @@ function fetch_data(page) {
         alert('Articles could not be loaded.');
     });
 }
-
 $(document).ready(function() {
     var owl = $('.owl-carousel');
     owl.owlCarousel({
@@ -176,14 +174,14 @@ $(document).ready(function() {
     $(document).on('click', '.pagination a', function(event) {
         event.preventDefault();
 
-        $('#load a').css('color', '#dfecf6');
+        /*$('#load a').css('color', '#dfecf6');
         $('#load').append(
             '<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="/img/loading.gif" />'
-        );
+        );*/
 
         var page = $(this).attr('href').split('page=')[1];
         fetch_data(page);
     });
-});
+})
 </script>
 @endsection

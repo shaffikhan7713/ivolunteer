@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Volunteer;
 use Facebook\Facebook;
 use Illuminate\Session\Store;
 
@@ -23,14 +24,17 @@ class SocialController extends Controller
         $helper = $this->facebook->getRedirectLoginHelper();
 
         $permissions = [
-            'email',
-            // 'pages_manage_posts',
-            // 'pages_read_engagement'
+            // 'email',
+            'pages_manage_posts',
+            'pages_read_engagement',
+            // 'publish_to_groups'
         ];
 
-        $redirectUri = 'http://localhost:8000/fb/callback';
+        $redirectUri = 'https://ivol.cintaxsolutions.com/fb/callback';
 
         $redirectURL = $helper->getLoginUrl($redirectUri, $permissions);
+        // $redirectURL = $redirectURL.'&vid='.$vid;
+        // $redirectURL = $redirectURL.'&config_id=865718911816544';
 
         return redirect($redirectURL);
     }
@@ -40,6 +44,10 @@ class SocialController extends Controller
         if (request('error') == 'access_denied') {
             dd('Something went wroing in accessing fb access token');
         }
+        
+        $voulnteerId = \Session::get('vid');
+        $volunteerDetails = Volunteer::where('id', $voulnteerId)->first();
+        $volunteerDetails = $volunteerDetails->toArray();
             
 
         // $accessToken = $this->facebook->handleCallback(); 
@@ -73,43 +81,103 @@ class SocialController extends Controller
     
         $finalAccessToken =  $accessToken->getValue();
 
-        \Session::put('fbAccessToken', $finalAccessToken);
-
         $response  = $this->facebook->get('/me?fields=id,name', $finalAccessToken);
         $user = $response->getGraphUser();
         $id = $user->getId();
+        
+        //get fb pages
+        $fbPagesArray = $this->facebook->get($id.'/accounts', $finalAccessToken);
+        $fbPagesArray = $fbPagesArray->getGraphEdge()->asArray();
+        if(count($fbPagesArray) > 0) {
+            $pageId = $fbPagesArray[0]['id'];
+            $pageToken = $fbPagesArray[0]['access_token'];
+            // $data = ['message' => 'Test content'];
+            $content = $volunteerDetails['title'];
+            $volunteerLink = $volunteerDetails['link'];
+            $imagePath = url('uploads/'.$volunteerDetails['mainImage']);
+            $volunteerImage = array($imagePath);
+            try {
+                $result = $this->sharePost($pageId, $pageToken, $content, $volunteerImage, $volunteerLink);
+                
+                $postPath = url('product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']);
+                return redirect($postPath)->with('success', 'Post shared successfully!');
+                
+                /* $response = $this->facebook->post(
+                    "$pageId/feed",
+                    $data,
+                    $pageToken
+                );
+                echo "<pre>responseresponse";print_r($response);
+                return $response->getGraphNode(); */
+    
+            } catch (FacebookResponseException $e) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            } catch (FacebookSDKException $e) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }
+        } else {
+            throw new Exception('No pages found');
+        }
 
-        $data = ['message' => 'Test content'];
+        
+    }
 
+    public function sharePost($accountId, $accessToken, $content, $images = [], $volunteerLink)
+    {
+        $data = ['message' => $content, 'link' => $volunteerLink];
+    
+        if(count($images) > 0){
+            $attachments = $this->uploadImages($accountId, $accessToken, $images);
+        
+            foreach ($attachments as $i => $attachment) {
+                $data["attached_media[$i]"] = "{\"media_fbid\":\"$attachment\"}";
+            }
+        }
+    
+        try {
+            return $this->postData($accessToken, "$accountId/feed", $data);
+        } catch (\Exception $exception) {
+              //notify user about error
+              return false;
+        }
+    }
+    
+    private function uploadImages($accountId, $accessToken, $images = [])
+    {
+        $attachments = [];
+    
+        foreach ($images as $image) {
+            if (!file_exists($image)) continue;
+    
+            $data = [
+                'source' => $this->facebook->fileToUpload($image),
+            ];
+    
+            try {
+                $response = $this->postData($accessToken, "$accountId/photos?published=false", $data);
+                if ($response) $attachments[] = $response['id'];
+            } catch (\Exception $exception) {
+                throw new Exception("Error while posting: {$exception->getMessage()}", $exception->getCode());
+            }
+        }
+    
+        return $attachments;
+    }
+    
+    private function postData($accessToken, $endpoint, $data)
+    {
         try {
             $response = $this->facebook->post(
-                "$id/feed",
+                $endpoint,
                 $data,
-                $finalAccessToken
+                $accessToken
             );
             return $response->getGraphNode();
-
+    
         } catch (FacebookResponseException $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         } catch (FacebookSDKException $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
-    }
-
-    public function getPages()
-    {
-        dd(\Session::get('fbAccessToken'));
-        $accessToken = \Session::get('fbAccessToken');
-        $pages = $this->facebook->get('/me/accounts', $accessToken);
-        $pages = $pages->getGraphEdge()->asArray();
-
-        return array_map(function ($item) {
-            return [
-                'access_token' => $item['access_token'],
-                'id' => $item['id'],
-                'name' => $item['name'],
-                'image' => "https://graph.facebook.com/{$item['id']}/picture?type=large"
-            ];
-        }, $pages);
-    }
+    }   
 }

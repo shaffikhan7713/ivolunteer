@@ -80,16 +80,17 @@
             <div class="col-md-4">
                 <label>Share</label>
                 <p class="pt-2 mb-4">
-                    {!! $link !!}
+                    <!--{!! $link !!}-->
                     <img src={{ asset('/img/instagram.png') }} width="60" alt="Share on Instagram"
                         class="img-fluid cursorPointer" />
                     <img src={{ asset('/img/discord2.png') }} width="60" alt="Share on Discord"
                         class="img-fluid discordIcon cursorPointer" />
+                    <a href="{{ url('/fb/login')}}"><img src={{ asset('/img/facebook.png') }} width="60"
+                            alt="Share on Facebook" class="img-fluid cursorPointer" /></a>
                     <a href="mailto:?subject={{ $volunteerDetails['title'] }}&amp;body=Check out this site {{ url('/product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']) }}."
                         title="Share by Email">
                         <img src={{ asset('/img/send-mail.png') }} width="60" alt="Share by Email">
                     </a>
-                    <a href="{{ url('/fb/login')}}">FB LOGIN</a>
 
                 </p>
                 <label>Give Ratings</label>

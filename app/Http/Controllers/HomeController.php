@@ -91,8 +91,7 @@ class HomeController extends Controller
             $volunteerDetails = Volunteer::where('id', $id)->first();
             // dd($volunteerDetails->toArray());
             $volunteerDetails = $volunteerDetails->toArray();
-            $postPath = url('product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']);
-            dd($postPath);
+
             //Instagram
             $config = array( // instantiation config params
                 'app_id' => env('APP_ID'), // facebook app id
@@ -201,7 +200,7 @@ class HomeController extends Controller
     public function contactUs(){
         return view('contactUs');
     }
-
+    
     public function fetchData(Request $request) {
         if($request->ajax())
         {
