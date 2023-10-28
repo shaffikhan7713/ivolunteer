@@ -1,5 +1,5 @@
 <footer class="tm-footer text-center">
-    <p>Copyright &copy; 2023 iVolunteer</p>
+    <p>Copyright &copy; 2023 Acrozzi</p>
 </footer>
 </div>
 <script>

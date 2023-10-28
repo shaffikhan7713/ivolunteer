@@ -81,8 +81,8 @@
                 <label>Share</label>
                 <p class="pt-2 mb-4">
                     <!--{!! $link !!}-->
-                    <img src={{ asset('/img/instagram.png') }} width="60" alt="Share on Instagram"
-                        class="img-fluid cursorPointer" />
+                    <!-- <img src={{ asset('/img/instagram.png') }} width="60" alt="Share on Instagram"
+                        class="img-fluid cursorPointer" /> -->
                     <img src={{ asset('/img/discord2.png') }} width="60" alt="Share on Discord"
                         class="img-fluid discordIcon cursorPointer" />
                     <a href="{{ url('/fb/login')}}"><img src={{ asset('/img/facebook.png') }} width="60"

@@ -11,19 +11,24 @@ class Volunteer extends Model
 
     protected $fillable = [
         'title',
+        'seoUri',
         'catId',
         'summary',
         'shortDescription',
         'email',
-        'age',
         'criteria',
         'whereLocation',
         'howToApply',
         'dateAndTime',
-        'timeCommitment',
         'phone',
         'whatVolunteerDoes',
         'link',
         'feedback',
+        'location',
+        'age',
+        'forWho',
+        'timeCommitment',
+        'collegeApplication',
+        'ratings',
     ];
 }

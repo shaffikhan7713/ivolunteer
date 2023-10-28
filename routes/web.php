@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DiscordController;
 use App\Http\Controllers\VolunteersController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\FilterItemsController;
+use App\Http\Controllers\HomeSlidersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +42,13 @@ Route::get('/clear-cache', function () {
  Route::get('/admin/volunteers', [VolunteersController::class, 'list']);
  Route::get('/admin/volunteer/{id}', [VolunteersController::class, 'edit']);
  Route::post('/admin/volunteer/upload-image', [VolunteersController::class, 'uploadVolunteerImage']);
+ Route::get('/admin/filter-items', [FilterItemsController::class, 'list']);
+ Route::get('/admin/filter-item/{id}', [FilterItemsController::class, 'edit']);
+ Route::post('/admin/filter-item/update', [FilterItemsController::class, 'updateFilterItem']);
+ Route::get('/admin/home-sliders', [HomeSlidersController::class, 'list']);
+ Route::get('/admin/home-sliders/add', [HomeSlidersController::class, 'add']);
+ Route::get('/admin/home-sliders/{id}', [HomeSlidersController::class, 'edit']);
+ Route::post('/admin/home-sliders/add-update', [HomeSlidersController::class, 'addUpdateHomeSlider']);
 
 Route::get('/fb/login', [SocialController::class, 'redirectToProvider']);
 Route::get('/fb/callback', [SocialController::class, 'handleProviderCallback']);

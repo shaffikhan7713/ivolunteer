@@ -30,7 +30,7 @@ class SocialController extends Controller
             // 'publish_to_groups'
         ];
 
-        $redirectUri = 'https://ivol.cintaxsolutions.com/fb/callback';
+        $redirectUri = 'https://acrozzi.com/fb/callback';
 
         $redirectURL = $helper->getLoginUrl($redirectUri, $permissions);
         // $redirectURL = $redirectURL.'&vid='.$vid;
@@ -92,9 +92,16 @@ class SocialController extends Controller
             $pageId = $fbPagesArray[0]['id'];
             $pageToken = $fbPagesArray[0]['access_token'];
             // $data = ['message' => 'Test content'];
+            
+            // $content = $volunteerDetails['title'];
+            // $volunteerLink = $volunteerDetails['link'];
+            // $imagePath = url('uploads/'.$volunteerDetails['mainImage']);
+
             $content = $volunteerDetails['title'];
-            $volunteerLink = $volunteerDetails['link'];
+            $content .= $volunteerDetails['shortDescription'];
+            $volunteerLink = url('product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']);
             $imagePath = url('uploads/'.$volunteerDetails['mainImage']);
+            
             $volunteerImage = array($imagePath);
             try {
                 $result = $this->sharePost($pageId, $pageToken, $content, $volunteerImage, $volunteerLink);
@@ -147,12 +154,11 @@ class SocialController extends Controller
         $attachments = [];
     
         foreach ($images as $image) {
-            if (!file_exists($image)) continue;
+            //if (!file_exists($image)) continue;
     
             $data = [
                 'source' => $this->facebook->fileToUpload($image),
             ];
-    
             try {
                 $response = $this->postData($accessToken, "$accountId/photos?published=false", $data);
                 if ($response) $attachments[] = $response['id'];

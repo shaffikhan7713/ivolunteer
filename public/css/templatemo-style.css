@@ -913,3 +913,13 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
+
+.admin-menu-tab {
+  border: 1px solid;
+  text-align: center;
+  padding: 10px;
+}
+
+.admin-menu-tab.active a {
+  color: red;
+}

@@ -6,19 +6,57 @@ use App\Imports\VolunteersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Volunteer;
 use App\Models\Ratings;
+use App\Models\FilterItems;
 use Illuminate\Http\Request;
 use Instagram\FacebookLogin\FacebookLogin;
 use Instagram\AccessToken\AccessToken;
 use Instagram\User\User;
+use App\Models\HomeSliders;
+// Use DB;
 
 class HomeController extends Controller
 {
     public function index(Request $request){
+        // DB::enableQueryLog();
         $search = $request['search'] ?? '';
-        $location = $request['location'] ?? '';
+        $where = "";
+        $getArray = array();
 
-        if($search || $location){
-            if($search && $location){
+        if($request['location'] && $request['location'] !== '' && $where === ''){
+            $where = $where."location = '".$request['location']."'";
+            array_push($getArray, $request['location']);
+        }
+
+        if($request['age'] && $request['age'] !== ''){
+            $where = ($where === '') ? $where."age = '".$request['age']."'" : $where." AND age = '".$request['age']."'";
+            array_push($getArray, $request['age']);
+        }
+
+        if($request['forWho'] && $request['forWho'] !== ''){
+            $where = ($where === '') ? $where."forWho = '".$request['forWho']."'" : $where." AND forWho = '".$request['forWho']."'";
+            array_push($getArray, $request['forWho']);
+        }
+
+        if($request['timeCommitment'] && $request['timeCommitment'] !== ''){
+            $where = ($where === '') ? $where."timeCommitment = '".$request['timeCommitment']."'" : $where." AND timeCommitment = '".$request['timeCommitment']."'";
+            array_push($getArray, $request['timeCommitment']);
+        }
+
+        if($request['collegeApplication'] && $request['collegeApplication'] !== ''){
+            $where = ($where === '') ? $where."collegeApplication = '".$request['collegeApplication']."'" : $where." AND collegeApplication = '".$request['collegeApplication']."'";
+            array_push($getArray, $request['collegeApplication']);
+        }
+
+        if($request['review'] && $request['review'] !== ''){
+            $where = ($where === '') ? $where."review = '".$request['review']."'" : $where." AND review = '".$request['review']."'";
+            array_push($getArray, $request['review']);
+        }
+
+        // dd($where);
+
+        if($search || $where){
+            // dd($request->all());
+            if($search && $where){
                 $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
                 ->orWhere('summary', 'like', $search)
                 ->orWhere('shortDescription', 'like', $search)
@@ -29,12 +67,12 @@ class HomeController extends Controller
                 ->orWhere('timeCommitment', 'like', $search)
                 ->orWhere('whatVolunteerDoes', 'like', $search)
                 ->orWhere('link', 'like', $search)
-                ->where('location', '=', $location)
+                ->whereRaw($where)
                 ->orderBy('id', 'asc')
                 ->paginate(8);
             }
 
-            if($search && !$location){
+            if($search && !$where){
                 $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
                 ->orWhere('summary', 'like', $search)
                 ->orWhere('shortDescription', 'like', $search)
@@ -49,17 +87,26 @@ class HomeController extends Controller
                 ->paginate(8);
             }
 
-            if($location && !$search){
-                $volunteerLists = Volunteer::where('location', '=', $location)                
+            if($where && !$search){
+                $volunteerLists = Volunteer::whereRaw($where)                
                 ->orderBy('id', 'asc')
                 ->paginate(8);
+                // ->toSql();
+                // dd($volunteerLists);
             }            
         } else {
             $volunteerLists = Volunteer::orderBy('id', 'asc')->paginate(8);
         }        
-        // dd($volunteerLists->toArray());
+
+        $filterItems = FilterItems::all();
+        foreach($filterItems as $k=>$filterItem){
+            $filterStrToArray = explode(',', $filterItem->filterValue);
+            $filterItems[$k]['filterValueArray'] = $filterStrToArray;
+        }
+        // dd($filterItems->toArray());
         // $volunteerLists = $volunteerLists->toArray();
-        $data = compact('volunteerLists', 'search', 'location');
+        $homeSliderList = HomeSliders::all();
+        $data = compact('volunteerLists', 'search', 'filterItems', 'getArray', 'homeSliderList');
         // dd($data['volunteerLists']);
         return view('home')->with($data);
     }
@@ -205,10 +252,41 @@ class HomeController extends Controller
         if($request->ajax())
         {
             $search = $request['search'] ?? '';
-            $location = $request['location'] && $request['location'] !== 'Select Location' ?? '';
+            $where = "";
+            $getArray = array();
 
-            if($search || $location){
-                if($search && $location){
+            if($request['location'] && $request['location'] !== '' && $where === ''){
+                $where = $where."location = '".$request['location']."'";
+                array_push($getArray, $request['location']);
+            }
+
+            if($request['age'] && $request['age'] !== ''){
+                $where = ($where === '') ? $where."age = '".$request['age']."'" : $where." AND age = '".$request['age']."'";
+                array_push($getArray, $request['age']);
+            }
+
+            if($request['forWho'] && $request['forWho'] !== ''){
+                $where = ($where === '') ? $where."forWho = '".$request['forWho']."'" : $where." AND forWho = '".$request['forWho']."'";
+                array_push($getArray, $request['forWho']);
+            }
+
+            if($request['timeCommitment'] && $request['timeCommitment'] !== ''){
+                $where = ($where === '') ? $where."timeCommitment = '".$request['timeCommitment']."'" : $where." AND timeCommitment = '".$request['timeCommitment']."'";
+                array_push($getArray, $request['timeCommitment']);
+            }
+
+            if($request['collegeApplication'] && $request['collegeApplication'] !== ''){
+                $where = ($where === '') ? $where."collegeApplication = '".$request['collegeApplication']."'" : $where." AND collegeApplication = '".$request['collegeApplication']."'";
+                array_push($getArray, $request['collegeApplication']);
+            }
+
+            if($request['review'] && $request['review'] !== ''){
+                $where = ($where === '') ? $where."review = '".$request['review']."'" : $where." AND review = '".$request['review']."'";
+                array_push($getArray, $request['review']);
+            }
+
+            if($search || $where){
+                if($search && $where){
                     $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
                     ->orWhere('summary', 'like', $search)
                     ->orWhere('shortDescription', 'like', $search)
@@ -219,12 +297,12 @@ class HomeController extends Controller
                     ->orWhere('timeCommitment', 'like', $search)
                     ->orWhere('whatVolunteerDoes', 'like', $search)
                     ->orWhere('link', 'like', $search)
-                    ->where('location', '=', $location)
+                    ->whereRaw($where)
                     ->orderBy('id', 'asc')
                     ->paginate(8);
                 }
 
-                if($search && !$location){
+                if($search && !$where){
                     $volunteerLists = Volunteer::where('title', 'like', '%'.$search.'%')
                     ->orWhere('summary', 'like', $search)
                     ->orWhere('shortDescription', 'like', $search)
@@ -239,8 +317,8 @@ class HomeController extends Controller
                     ->paginate(8);
                 }
 
-                if($location && !$search){
-                    $volunteerLists = Volunteer::where('location', '=', $location)                
+                if($where && !$search){
+                    $volunteerLists = Volunteer::whereRaw($where)               
                     ->orderBy('id', 'asc')
                     ->paginate(8);
                 }            

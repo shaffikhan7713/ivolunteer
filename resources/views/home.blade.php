@@ -19,64 +19,24 @@
                 </ul>
             </nav>
         </div> -->
+    @if(count($homeSliderList) > 0)
     <section class="p-1">
         <div class="row">
             <div class="large-12 columns">
                 <div class="owl-carousel owl-theme">
+                    @foreach($homeSliderList as $slider)
                     <div class="item">
                         <a href="/" target="_parent">
-                            <img
-                                src="https://cdn0.handsonconnect.org/0220/imagesResized/mobile/8323a801-e62d-4931-8805-8841ff7dd7d3.jpg" />
+                            <img src="{{ url('uploads/homesliderimages/'.$slider->image) }}" alt="Image"
+                                class="img-fluid tm-gallery-img" width="60" height="60" />
                         </a>
                     </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img
-                                src="https://cdn0.handsonconnect.org/0220/imagesResized/mobile/018ec552-edfa-4d2b-b7cc-e2e2dff3c598.jpg" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img
-                                src="https://cdn0.handsonconnect.org/0220/imagesResized/mobile/ae20eda9-def8-497f-a559-f78699d4c949.jpg" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img
-                                src="https://cdn0.handsonconnect.org/0220/imagesResized/mobile/f05d06d8-e747-4773-a9fd-fc1ff83e2bc8.jpg" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/CVP%20(58).png" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img
-                                src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/Donation%20Drives_1080%20x%201080%20(45).png" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/CVP%20(77).png" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/CVP%20(82).png" />
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="/" target="_parent">
-                            <img src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/CVP%20(85).png" />
-                        </a>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </section>
+    @endif
 
     <div class="tm-section tm-container-inner btn-warning">
         <form id="opportunity-search-form" class="searchvo p-4 mb-3" action="" method="get">
@@ -84,31 +44,37 @@
             <h5 style="color: white; mb-2">Volunteer Opportunity Search</h5>
             <div class="row">
                 <div class="col-md-4">
-                    <div class="input-group">
+                    <div class="input-group m-1">
                         <input type="search" name="search" class="form-control" placeholder="Enter to search"
                             aria-label="Enter to search" value="{{ $search }}" />
                     </div>
-
                 </div>
+
+                @if(count($filterItems) > 0)
+                @foreach($filterItems as $filter)
                 <div class="col-md-4">
-                    <select class="form-select" name="location" aria-label="Default select example">
-                        <option selected>Select Location</option>
-                        <option {{ $location && $location === 'Austin' ? 'selected' : ''}} value="Austin">Austin
-                        </option>
-                        <option {{ $location && $location === 'Seattle' ? 'selected' : ''}} value="Seattle">Seattle
-                        </option>
-                        <option {{ $location && $location === 'Boston' ? 'selected' : ''}} value="Boston">Boston
-                        </option>
-                        <option {{ $location && $location === 'New York' ? 'selected' : ''}} value="New York">New
-                            York</option>
-                        <option {{ $location && $location === 'Chicago' ? 'selected' : ''}} value="Chicago">Chicago
-                        </option>
+                    <select class="form-select m-1" name="{{ $filter->filterName }}"
+                        aria-label="Default select example">
+                        @if(count($filter->filterValueArray) > 0)
+                        <option value="">Select {{ ucfirst($filter->filterName) }}</option>
+                        @foreach($filter->filterValueArray as $filterValue)
+                        @if(count($getArray) > 0)
+                        <option <?php if(in_array($filterValue, $getArray)) { ?> selected="selected" <?php } ?>
+                            value="{{ $filterValue }}">{{ $filterValue }}</option>
+                        @else
+                        <option value="{{ $filterValue }}">{{ $filterValue }}</option>
+                        @endif
+                        @endforeach
+                        @endif
                     </select>
                 </div>
-                <div class="col-md-2">
+                @endforeach
+                @endif
+
+                <div class="col-md-2 m-2">
                     <button type="submit" class="btn btn-secondary w100">Search</button>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 m-2">
                     <a href="/">Clear Filters</a>
                 </div>
             </div>

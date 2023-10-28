@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Models\Volunteer;
 
 class DiscordController extends Controller
 {
@@ -11,9 +12,18 @@ class DiscordController extends Controller
     {
         $webhookUrl = env('DISCORD_URL'); // Replace with your Discord webhook URL
 
-        $content = $request->input('content'); // The content of the post you want to share
+        $voulnteerId = \Session::get('vid');
+        $volunteerDetails = Volunteer::where('id', $voulnteerId)->first();
+        $volunteerDetails = $volunteerDetails->toArray();
+
+        $content = '**'.$volunteerDetails['title'].'**';
+        $content .= '```'.$volunteerDetails['shortDescription'].'```';
+        $content .= url('product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']);
+
+        // $imagePath = url('uploads/'.$volunteerDetails['mainImage']);;
 
         $data = [
+            'username'=> 'Acrozzi',
             'content' => $content,
         ];
 
@@ -26,3 +36,5 @@ class DiscordController extends Controller
         return redirect()->back()->with('success', 'Post shared on Discord');
     }
 }
+
+?>

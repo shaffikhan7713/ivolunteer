@@ -13,24 +13,22 @@
     @endif
 
     <div class="tm-section tm-container-inner mb-3 mt-4">
-        <h5>Volunteer List</h5>
-        @if(count($volunteerLists) > 0)
+        <h5>Filter Items List</h5>
+        @if(count($filterItemLists) > 0)
         <table border="1" cellspacing="3" cellpadding="5">
             <thead>
-                <th>Title</th>
-                <th>Age</th>
-                <th>Phone</th>
-                <th>Email</th>
+                <th>ID</th>
+                <th>Filter Name</th>
+                <th>Filter Value</th>
                 <th>Action</th>
             </thead>
             <tbody>
-                @foreach($volunteerLists as $volunteer)
+                @foreach($filterItemLists as $filterItem)
                 <tr>
-                    <td>{{ $volunteer->title }}</td>
-                    <td>{{ $volunteer->age }}</td>
-                    <td>{{ $volunteer->phone }}</td>
-                    <td>{{ $volunteer->email }}</td>
-                    <td><a href="{{ url('/admin/volunteer/'.$volunteer->id) }}">EDIT</a></td>
+                    <td>{{ $filterItem->id }}</td>
+                    <td>{{ $filterItem->filterName }}</td>
+                    <td>{{ $filterItem->filterValue }}</td>
+                    <td><a href="{{ url('/admin/filter-item/'.$filterItem->id) }}">EDIT</a></td>
                 </tr>
                 @endforeach
             </tbody>

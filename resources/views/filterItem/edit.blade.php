@@ -12,21 +12,16 @@
     @endif
 
     <div class="tm-section tm-container-inner mb-3 mt-4">
-        <h5>Volunteer Edit</h5>
-        <form class="p-3" action="/admin/volunteer/upload-image" method="POST" enctype="multipart/form-data"
-            style="border: 1px solid;">
+        <h5>Edit Filter Item</h5>
+        <form class="p-3" action="/admin/filter-item/update" method="POST" style="border: 1px solid;">
             @csrf
-            <p>Title: <b>{{ $volunteerDet->title }}</b></p>
-
-            <br>
-            <p>Select main image file to upload (250 x 250)</p>
-            <input type="file" name="mainImage" class="form-control">
-            <input type="hidden" name="volunteerId" value="{{ $volunteerDet->id}}">
+            <label><b>{{ ucfirst($filterItemDet->filterName) }}:</b></label>
+            <input type="text" name="filterValue" value="{{ $filterItemDet->filterValue }}" class="form-control">
+            <input type="hidden" name="id" value="{{ $filterItemDet->id}}">
             <br>
             <button class="btn btn-primary">Submit</button>
-            <a class="m-2" href="/admin/volunteers">Back</a>
+            <a class="m-2" href="/admin/filter-items">Back</a>
         </form>
-
     </div>
 </main>
 

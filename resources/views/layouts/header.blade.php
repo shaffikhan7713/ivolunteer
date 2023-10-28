@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Laravel</title>
+    <title>Acrozzi - Volunteering Platform</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />
@@ -36,24 +36,26 @@ https://templatemo.com/tm-539-simple-house
 
 <body>
     <div class="container p-0">
-        <!-- Top box -->
-        <!-- Logo & Site Name -->
         <div class="placeholder">
             <div class="row tm-header-inner">
                 <div class="col-md-6 col-12 cursorPointer">
-                    <a href="/">
-                        <img src="{{ asset('/img/simple-house-logo.png') }}" alt="Logo" class="tm-site-logo" />
-                    </a>
+                    <a href="/"><img src="{{ asset('/img/simple-house-logo.png') }}" alt="Logo"
+                            class="tm-site-logo" /></a>
                     <div class="tm-site-text-box">
-                        <h1 class="tm-site-title">i Volunteer</h1>
-                        <h6 class="tm-site-description">Your efforts can change lives</h6>
+                        <h1 class="tm-site-title">Acrozzi</h1>
+                        <h6 class="tm-site-description">Your efforts can change lives </h6>
                     </div>
                 </div>
                 <nav class="col-md-6 col-12 tm-nav">
                     <ul class="tm-nav-ul">
-                        <li class="tm-nav-li"><a href="/" class="tm-nav-link active">Home</a></li>
-                        <li class="tm-nav-li"><a href="/about-us" class="tm-nav-link">About</a></li>
-                        <li class="tm-nav-li"><a href="/contact-us" class="tm-nav-link">Contact</a></li>
+                        <li class="tm-nav-li"><a href="/"
+                                class="tm-nav-link {{ Request::segment(1) == '' ? 'active' : '' }}">Home</a></li>
+                        <li class="tm-nav-li"><a href="/about-us"
+                                class="tm-nav-link {{ Request::segment(1) == 'about-us' ? 'active' : '' }}">About</a>
+                        </li>
+                        <li class="tm-nav-li"><a href="/contact-us"
+                                class="tm-nav-link {{ Request::segment(1) == 'contact-us' ? 'active' : '' }}">Contact</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
