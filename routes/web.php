@@ -7,6 +7,7 @@ use App\Http\Controllers\VolunteersController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\FilterItemsController;
 use App\Http\Controllers\HomeSlidersController;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,9 +50,11 @@ Route::get('/clear-cache', function () {
  Route::get('/admin/home-sliders/add', [HomeSlidersController::class, 'add']);
  Route::get('/admin/home-sliders/{id}', [HomeSlidersController::class, 'edit']);
  Route::post('/admin/home-sliders/add-update', [HomeSlidersController::class, 'addUpdateHomeSlider']);
+ Route::get('/admin/subscriptions', [SubscriptionController::class, 'list']);
 
 Route::get('/fb/login', [SocialController::class, 'redirectToProvider']);
 Route::get('/fb/callback', [SocialController::class, 'handleProviderCallback']);
 Route::get('/fb/getPages', [SocialController::class, 'getPages']);
 
 Route::post('/pagination/fetch_data', [HomeController::class, 'fetchData']);
+Route::post('/home/subscribe', [HomeController::class, 'subscribeUser']);

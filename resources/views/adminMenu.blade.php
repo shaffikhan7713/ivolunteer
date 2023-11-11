@@ -7,4 +7,6 @@
             href="{{ url('upload-excel') }}">Upload Excel</a></div>
     <div class="col admin-menu-tab {{ Request::segment(2) == 'volunteers' ? 'active' : '' }}"><a
             href="{{ url('admin/volunteers') }}">Volunteers</a></div>
+    <div class="col admin-menu-tab {{ Request::segment(2) == 'subscriptions' ? 'active' : '' }}"><a
+            href="{{ url('admin/subscriptions') }}">Subscriptions</a></div>
 </div>

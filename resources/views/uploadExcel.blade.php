@@ -4,6 +4,13 @@
 
 <main>
     @include('adminMenu')
+    @if(session('success'))
+    <h4 class="tm-text-success text-center mt-3">{{session('success')}}</h4>
+    @endif
+
+    @if(session('error'))
+    <h4 class="tm-text-success text-center mt-3">{{session('error')}}</h4>
+    @endif
     <div class="container">
         <div class="card mt-3 mb-3">
             <div class="card-header text-center">

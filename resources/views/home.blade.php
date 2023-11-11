@@ -3,6 +3,13 @@
 @section('main-section')
 
 <main>
+    @if(session('success'))
+    <h4 class="tm-text-success text-center mt-3">{{session('success')}}</h4>
+    @endif
+
+    @if(session('error'))
+    <h4 class="tm-text-success text-center mt-3">{{session('error')}}</h4>
+    @endif
     <!-- <header class="row tm-welcome-section">
             <h2 class="col-12 text-center tm-section-title">Welcome to Simple House</h2>
             <p class="col-12 text-center">Total 3 HTML pages are included in this template. Header image has a parallax
@@ -42,7 +49,7 @@
         <form id="opportunity-search-form" class="searchvo p-4 mb-3" action="" method="get">
             @csrf
             <h5 style="color: white; mb-2">Volunteer Opportunity Search</h5>
-            <div class="row">
+            <div class="row filterDiv">
                 <div class="col-md-4">
                     <div class="input-group m-1">
                         <input type="search" name="search" class="form-control" placeholder="Enter to search"
@@ -93,6 +100,16 @@
         </div>
     </div>
     @endif
+
+    <div class="page">
+        <h3>Subscribe to receive notifications</h3>
+        <form id="newsForm" name="newsForm" action="/home/subscribe" method="POST">
+            @csrf
+            <input name="newsEmail" type="email" class="newsEmail" placeholder="Email" />
+            <input name="newsFilters" type="hidden" value="" class="newsFilters" />
+            <input type="submit" value="Subscribe" />
+        </form>
+    </div>
     <!-- <div class="tm-section tm-container-inner">
         <div class="row">
             <div class="col-md-6">
@@ -147,6 +164,19 @@ $(document).ready(function() {
 
         var page = $(this).attr('href').split('page=')[1];
         fetch_data(page);
+    });
+
+    $('#newsForm').on('submit', function() {
+        var filterData = {};
+        $('.filterDiv select').each(function() {
+            //alert($(this).attr('name'));
+            var selectName = $(this).attr('name');
+            var selectNameValue = $('select[name="' + selectName + '"]').find(":selected")
+                .val();
+
+            filterData[selectName] = selectNameValue;
+        });
+        $('.newsFilters').val(JSON.stringify(filterData));
     });
 })
 </script>

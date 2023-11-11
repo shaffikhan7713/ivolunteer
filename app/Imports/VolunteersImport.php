@@ -17,32 +17,32 @@ class VolunteersImport implements ToModel, WithHeadingRow
     {
         // dd($row);
 
-        if(!array_filter($row)) {
+        if(!array_filter($row) || $row['title'] === '') {
             return null;
         } 
 
         $seoUri = $this->generateSeoURL(trim($row['title']));
 
         return new Volunteer([
-            'title' => trim($row['title']),
+            'title' => trim($row['title'] ?? ''),
             'seoUri' => $seoUri,            
-            'shortDescription' => trim($row['shortDescription']),
-            'summary' => trim($row['summary']),
-            'email' => trim($row['email']),
-            'phone' => trim($row['phone']),      
-            'link' => trim($row['link']),            
-            'location' => trim($row['location']),
-            'age' => trim($row['age']),
-            'forWho' => trim($row['forWho']),
-            'timeCommitment' => trim($row['timeCommitment']),
-            'collegeApplication' => trim($row['feedback']),
-            // 'ratings' => trim($row['ratings'],
-            'criteria' => trim($row['criteria']),
-            'whereLocation' => trim($row['whereLocation']),            
-            'howToApply' => trim($row['howToApply']),
-            'dateAndTime' => trim($row['dateAndTime']),                        
-            'whatVolunteerDoes' => trim($row['whatVolunteerDoes']),
-            'feedback' => trim($row['feedback']),
+            'shortDescription' => trim($row['shortDescription'] ?? ''),
+            'summary' => trim($row['summary'] ?? ''),
+            'email' => trim($row['email'] ?? ''),
+            'phone' => trim($row['phone'] ?? ''),      
+            'link' => trim($row['link'] ?? ''),            
+            'location' => trim($row['location'] ?? ''),
+            'age' => trim($row['age'] ?? ''),
+            'forWho' => trim($row['forWho'] ?? ''),
+            'timeCommitment' => trim($row['timeCommitment'] ?? ''),
+            'collegeApplication' => trim($row['feedback'] ?? ''),
+            // 'ratings' => trim($row['ratings'] ?? '',
+            'criteria' => trim($row['criteria'] ?? ''),
+            'whereLocation' => trim($row['whereLocation'] ?? ''),            
+            'howToApply' => trim($row['howToApply'] ?? ''),
+            'dateAndTime' => trim($row['dateAndTime'] ?? ''),                        
+            'whatVolunteerDoes' => trim($row['whatVolunteerDoes'] ?? ''),
+            'feedback' => trim($row['feedback'] ?? ''),
         ]);
     }
 

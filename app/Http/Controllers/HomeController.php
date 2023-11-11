@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Volunteer;
 use App\Models\Ratings;
 use App\Models\FilterItems;
+use App\Models\Subscriptions;
 use Illuminate\Http\Request;
 use Instagram\FacebookLogin\FacebookLogin;
 use Instagram\AccessToken\AccessToken;
@@ -326,6 +327,28 @@ class HomeController extends Controller
                 $volunteerLists = Volunteer::orderBy('id', 'asc')->paginate(8);
             }  
             return view('load', ['volunteerLists' => $volunteerLists])->render();
+        }
+    }
+
+    public function subscribeUser(Request $request){
+        $newsEmail = $request->input('newsEmail');
+        $newsFilters = $request->input('newsFilters');
+
+        $result = Subscriptions::where('email', trim($newsEmail))->first();
+        
+        if($result) {   
+            $resArr = $result->toArray();         
+            Subscriptions::where('id', $resArr['id'])
+                ->update(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1));
+
+            return redirect()->back()->with('success', 'Subscriptions submitted successfully');
+        } else {
+            if($newsEmail) {
+                Subscriptions::create(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1));
+                return redirect()->back()->with('success', 'Subscriptions submitted successfully');
+            } else {
+                return redirect()->back()->with('error', 'Something went wrong, Please refresh and try again');
+            }
         }
     }
 }
