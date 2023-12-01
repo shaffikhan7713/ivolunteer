@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\HomeSliders;
+use App\Models\Mission;
 use Illuminate\Http\Request;
 
 class HomeSlidersController extends Controller
@@ -62,5 +63,47 @@ class HomeSlidersController extends Controller
         } else {
             return redirect()->back()->with('error', 'Something went wrong! Please try again');
         }
+    }
+
+    //Mission actions
+    public function mlist(){
+        $mission = Mission::orderBy('id', 'asc')->get();
+        $data = compact('mission');
+        return view('mission/list')->with($data);
+    }
+
+    public function madd(){
+        return view('mission/add');
+    }
+
+    public function medit(Request $request, int $id){
+        $mission = Mission::where('id', $id)->first();
+        $data = compact('mission');
+        return view('mission/edit')->with($data);
+    }
+
+    public function maddUpdateHomeSlider(Request $request){  
+        if($request->file()) {
+            $imageName = time().'.'.$request->image->extension(); 
+            $request->image->move(public_path('uploads/mission'), $imageName);      
+            
+            if($request->input('id')) {
+                $res = Mission::where('id', $request->input('id'))
+                ->update(['image' => $imageName, 'title' => $request->title, 'description' => $request->description]);
+                return redirect()->back()->with('success', 'Our mission updated successfully!');
+            } else {
+                Mission::create(array('image' => $imageName, 'title' => $request->title, 'description' => $request->description));
+                return redirect()->back()->with('success', 'Our mission added successfully!');
+            }
+        } else {
+            if($request->input('id')) {
+                $res = Mission::where('id', $request->input('id'))
+                ->update(['title' => $request->title, 'description' => $request->description]);
+                return redirect()->back()->with('success', 'Our mission updated successfully!');
+            } else {
+                Mission::create(array('title' => $request->title, 'description' => $request->description));
+                return redirect()->back()->with('success', 'Our mission added successfully!');
+            }
+        }        
     }
 }

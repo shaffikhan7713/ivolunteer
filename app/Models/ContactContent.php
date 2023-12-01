@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Subscriptions extends Model
+class ContactContent extends Model
 {
     use HasFactory;
+    protected $table = 'contactcontent';
 
     protected $fillable = [
+        'id',
+        'address',
         'email',
-        'filters',
-        'status',
-        'sendEmailDate',
-        'filterUrl',
+        'phone',
     ];
 }

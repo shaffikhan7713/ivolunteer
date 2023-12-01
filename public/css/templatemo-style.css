@@ -173,6 +173,7 @@ html {
 
 .tm-mb-p {
     margin-bottom: 20px;
+    color: white;
 }
 
 .tm-text-success {
@@ -321,7 +322,7 @@ p, address {
 }
 
 .tm-welcome-section {
-  margin: 60px auto;
+  margin: 30px auto;
   max-width: 655px;
 }
 
@@ -604,10 +605,10 @@ p, address {
 }
 
 .tm-history-title {
-  font-size: 1.6rem;
+  font-size: 2.5rem;
   font-weight: 300;
-  color: #1A6692;
-  margin-bottom: 30px;
+  color: #000;
+  margin-bottom: 20px;
 }
 
 .tm-history-text {
@@ -974,4 +975,41 @@ form input[type="submit"]:focus {
                     0 0 10px rgba(255,255,255, 0.1);
   color: white;
   margin-left: 2px;
+}
+
+.people-say {
+  background-color: #785d65;
+}
+
+.people-say p {
+  line-height: normal;
+}
+
+.people-say .heading {
+  margin-bottom: 1em; 
+}
+
+.people-say .heading p {
+  color: #000;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-family: arial;
+}
+
+.ps-sub {
+  background-color: white;
+  margin: 10px auto;
+  padding: 20px 25px;
+  height: 400px;
+}
+
+.ps-title {
+  padding: 10px;
+  font-size: 40px;
+  color: #dcc8c4;
+  font-family: arial;
+  font-weight: bold;
+  word-spacing: 10px;
+  letter-spacing: 10px;
 }

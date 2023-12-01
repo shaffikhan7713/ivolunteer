@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Imports\VolunteersImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Mail\SendNewsletter;
 use App\Models\Volunteer;
 use App\Models\Ratings;
 use App\Models\FilterItems;
 use App\Models\Subscriptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Instagram\FacebookLogin\FacebookLogin;
 use Instagram\AccessToken\AccessToken;
 use Instagram\User\User;
 use App\Models\HomeSliders;
+use App\Models\Mission;
+use App\Models\PeoplesReview;
+use App\Models\Founders;
+use App\Models\ContactContent;
+use App\Models\ContactUs;
 // Use DB;
 
 class HomeController extends Controller
@@ -107,7 +114,10 @@ class HomeController extends Controller
         // dd($filterItems->toArray());
         // $volunteerLists = $volunteerLists->toArray();
         $homeSliderList = HomeSliders::all();
-        $data = compact('volunteerLists', 'search', 'filterItems', 'getArray', 'homeSliderList');
+        $mission = Mission::first();
+        $peoplesReview = PeoplesReview::all();
+        $filterUrl = url()->full();
+        $data = compact('volunteerLists', 'search', 'filterItems', 'getArray', 'homeSliderList', 'filterUrl', 'mission', 'peoplesReview');
         // dd($data['volunteerLists']);
         return view('home')->with($data);
     }
@@ -242,11 +252,30 @@ class HomeController extends Controller
     }
 
     public function aboutUs(){
-        return view('aboutUs');
+        $founders = Founders::all();
+        $data = compact('founders');
+        return view('aboutUs')->with($data);
     }
 
     public function contactUs(){
-        return view('contactUs');
+        $contact = ContactContent::first();
+        $data = compact('contact');
+        return view('contactUs')->with($data);
+    }
+
+    public function addContact(Request $request){
+        $request->validate([
+            'email' => 'required'
+        ]);
+
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $message = $request->input('message');
+        $name = $request->input('name');
+
+        ContactUs::create(array('email' => $email, 'phone' => $phone, 'message' => $message, 'name' => $name));
+
+        return redirect()->back()->with('success', 'Contact submitted successfully');
     }
     
     public function fetchData(Request $request) {
@@ -333,22 +362,50 @@ class HomeController extends Controller
     public function subscribeUser(Request $request){
         $newsEmail = $request->input('newsEmail');
         $newsFilters = $request->input('newsFilters');
+        $filterUrl = $request->input('filterUrl');
 
         $result = Subscriptions::where('email', trim($newsEmail))->first();
         
         if($result) {   
             $resArr = $result->toArray();         
             Subscriptions::where('id', $resArr['id'])
-                ->update(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1));
+                ->update(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1, 'filterUrl' => $filterUrl));
 
             return redirect()->back()->with('success', 'Subscriptions submitted successfully');
         } else {
             if($newsEmail) {
-                Subscriptions::create(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1));
+                Subscriptions::create(array('email' => $newsEmail, 'filters' => $newsFilters, 'status' => 1, 'filterUrl' => $filterUrl));
                 return redirect()->back()->with('success', 'Subscriptions submitted successfully');
             } else {
                 return redirect()->back()->with('error', 'Something went wrong, Please refresh and try again');
             }
+        }
+    }
+
+    public function sendEmailToSubscribers(){
+        $result = Subscriptions::all();
+        
+        if($result) {   
+            $resArr = $result->toArray();       
+            foreach($resArr as $res) {
+                Mail::send('mail', $res, function($messages) use ($res){
+                    $messages->to($res['email']);
+                    $messages->subject('Acrozzi New Volunteers List');
+                });
+                $date = date('Y-m-d h:i:s', time());
+                Subscriptions::where('id', $res['id'])->update(array('sendEmailDate' => $date));
+            }              
+
+            return redirect('/')->with('success', 'Subscriptions submitted successfully');
+        } else {
+            return redirect('/')->back()->with('error', 'No records found');
+        }
+    }
+
+    public function updateViews(Request $request) {
+        if($request['viewsCount'] > 0) {
+            Volunteer::where('id', $request['volunteerId'])->update(array('views' => $request['viewsCount']));
+            return true;
         }
     }
 }

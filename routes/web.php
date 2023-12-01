@@ -8,6 +8,9 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\FilterItemsController;
 use App\Http\Controllers\HomeSlidersController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PeoplesReviewController;
+use App\Http\Controllers\FoundersController;
+use App\Http\Controllers\ContactUsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,9 +55,31 @@ Route::get('/clear-cache', function () {
  Route::post('/admin/home-sliders/add-update', [HomeSlidersController::class, 'addUpdateHomeSlider']);
  Route::get('/admin/subscriptions', [SubscriptionController::class, 'list']);
 
+ Route::get('/admin/mission', [HomeSlidersController::class, 'mlist']);
+ Route::get('/admin/mission/add', [HomeSlidersController::class, 'madd']);
+ Route::get('/admin/mission/{id}', [HomeSlidersController::class, 'medit']);
+ Route::post('/admin/mission/add-update', [HomeSlidersController::class, 'maddUpdateHomeSlider']);
+
+ Route::get('/admin/founder', [FoundersController::class, 'list']);
+ Route::get('/admin/founder/add', [FoundersController::class, 'add']);
+ Route::get('/admin/founder/{id}', [FoundersController::class, 'edit']);
+ Route::post('/admin/founder/add-update', [FoundersController::class, 'addUpdateFounder']);
+
+ Route::get('/admin/contact-us', [ContactUsController::class, 'list']);
+
+ Route::get('/admin/peoples-review', [PeoplesReviewController::class, 'list']);
+ Route::get('/admin/peoples-review/add', [PeoplesReviewController::class, 'add']);
+ Route::get('/admin/peoples-review/{id}', [PeoplesReviewController::class, 'edit']);
+ Route::post('/admin/peoples-review/add-update', [PeoplesReviewController::class, 'addUpdate']);
+
 Route::get('/fb/login', [SocialController::class, 'redirectToProvider']);
 Route::get('/fb/callback', [SocialController::class, 'handleProviderCallback']);
 Route::get('/fb/getPages', [SocialController::class, 'getPages']);
 
 Route::post('/pagination/fetch_data', [HomeController::class, 'fetchData']);
 Route::post('/home/subscribe', [HomeController::class, 'subscribeUser']);
+
+Route::get('/home/sendEmail', [HomeController::class, 'sendEmailToSubscribers']);
+Route::get('/home/updateViews', [HomeController::class, 'updateViews']);
+
+Route::post('/add-contact', [HomeController::class, 'addContact']);

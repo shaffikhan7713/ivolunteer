@@ -45,7 +45,27 @@
     </section>
     @endif
 
-    <div class="tm-section tm-container-inner btn-warning">
+    @if($mission)
+    <div class="tm-container-inner btn-warning">
+        <div class="row">
+            <div class="col-12 text-center" style="margin: 10px 80px;">
+                <img src="{{ url('uploads/mission/'.$mission->image) }}" alt="Image" class="img-fluid" width="100"
+                    height="100">
+            </div>
+            <div class="col-12">
+                <div class="tm-history-inner">
+                    <div class="tm-history-text text-center m-2">
+                        <h4 class="tm-history-title"><span style="font-weight: 800; font-family: arial;">OUR</span>
+                            MISSION</h4>
+                        <p class="tm-mb-p">{{ $mission->description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <div class="tm-section tm-container-inner btn-warning mt-3">
         <form id="opportunity-search-form" class="searchvo p-4 mb-3" action="" method="get">
             @csrf
             <h5 style="color: white; mb-2">Volunteer Opportunity Search</h5>
@@ -101,15 +121,42 @@
     </div>
     @endif
 
+    @if(count($peoplesReview) > 0)
+    <div class="tm-container-inner people-say">
+        <div class="row ps-title">
+            <div class="col text-center">
+                What people say.....
+            </div>
+        </div>
+        <div class="row">
+            @foreach($peoplesReview as $pReview)
+            <div class="col-lg-4">
+                <div class="tm-feature ps-sub">
+                    <div class="heading">
+                        <p>{{ $pReview->name }},</p>
+                        <p>{{ $pReview->place }}</p>
+                    </div>
+                    <p style="font-size: 1rem; ">{{ $pReview->description }}</p>
+                    <i class="fa-solid fa-quote-right"></i>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <div class="page">
         <h3>Subscribe to receive notifications</h3>
         <form id="newsForm" name="newsForm" action="/home/subscribe" method="POST">
             @csrf
             <input name="newsEmail" type="email" class="newsEmail" placeholder="Email" />
             <input name="newsFilters" type="hidden" value="" class="newsFilters" />
+            <input name="filterUrl" type="hidden" value="{{ $filterUrl }}" class="filterUrl" />
             <input type="submit" value="Subscribe" />
         </form>
     </div>
+
+
     <!-- <div class="tm-section tm-container-inner">
         <div class="row">
             <div class="col-md-6">

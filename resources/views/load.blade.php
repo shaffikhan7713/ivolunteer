@@ -8,8 +8,7 @@
                     @if($volunteer['mainImage'] != '')
                     <img src="uploads/{{ $volunteer['mainImage']}}" alt="Image" class="img-fluid tm-gallery-img" />
                     @else
-                    <img src="https://cdn0.handsonconnect.org/00006c/imagesResized/mobile/CVP%20(77).png" alt="Image"
-                        class="img-fluid tm-gallery-img" />
+                    <img src={{ asset('/img/noimage.jpg') }} alt="No Image" class="img-fluid tm-gallery-img" />
                     @endif
                     <figcaption>
                         <h4 class="tm-gallery-title">{{ $volunteer['title'] }}</h4>

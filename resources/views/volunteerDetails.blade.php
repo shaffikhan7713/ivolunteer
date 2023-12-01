@@ -87,12 +87,14 @@
                         class="img-fluid discordIcon cursorPointer" />
                     <a href="{{ url('/fb/login')}}"><img src={{ asset('/img/facebook.png') }} width="60"
                             alt="Share on Facebook" class="img-fluid cursorPointer" /></a>
-                    <a href="mailto:?subject={{ $volunteerDetails['title'] }}&amp;body=Check out this site {{ url('/product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']) }}."
+                    <a href="mailto:info@acrozzi.com?subject={{ $volunteerDetails['title'] }}&amp;body=Check out this site {{ url('/product/'.$volunteerDetails['seoUri'].'/'.$volunteerDetails['id']) }}."
                         title="Share by Email">
                         <img src={{ asset('/img/send-mail.png') }} width="60" alt="Share by Email">
                     </a>
 
                 </p>
+                <label class="mt-3">Total Views: <strong id="viewsCnt"></strong></label>
+                <br /><br />
                 <label>Give Ratings</label>
                 <div class="rating">
                     <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
@@ -199,6 +201,7 @@
             </div>
         </div>
     </div> -->
+        <input type="hidden" name="views" value="{{ $volunteerDetails['views'] }}" id="viewsCount">
 </main>
 
 <script>
@@ -220,6 +223,17 @@ $(document).ready(function() {
             alert("Please rate to submit");
             return false;
         }
+    });
+
+    var vCount = parseInt($('#viewsCount').val()) + 1;
+    var volunteerId = $('#volunteerId').val();
+    $.ajax({
+        url: "/home/updateViews?viewsCount=" + vCount + "&volunteerId=" + volunteerId,
+        type: 'GET',
+    }).done(function(data) {
+        $('#viewsCnt').html(vCount);
+    }).fail(function() {
+        console.log('something went wrong in updating views count');
     });
 });
 </script>

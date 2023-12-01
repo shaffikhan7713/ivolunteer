@@ -7,6 +7,14 @@
             href="{{ url('upload-excel') }}">Upload Excel</a></div>
     <div class="col admin-menu-tab {{ Request::segment(2) == 'volunteers' ? 'active' : '' }}"><a
             href="{{ url('admin/volunteers') }}">Volunteers</a></div>
+    <div class="col admin-menu-tab {{ Request::segment(2) == 'mission' ? 'active' : '' }}"><a
+            href="{{ url('admin/mission') }}">Our Mission</a></div>
+    <div class="col admin-menu-tab {{ Request::segment(2) == 'peoples-review' ? 'active' : '' }}"><a
+            href="{{ url('admin/peoples-review') }}">Peoples Review</a></div>
     <div class="col admin-menu-tab {{ Request::segment(2) == 'subscriptions' ? 'active' : '' }}"><a
             href="{{ url('admin/subscriptions') }}">Subscriptions</a></div>
+    <div class="col admin-menu-tab {{ Request::segment(2) == 'founder' ? 'active' : '' }}"><a
+            href="{{ url('admin/founder') }}">Founder</a></div>
+    <div class="col admin-menu-tab {{ Request::segment(2) == 'contact-us' ? 'active' : '' }}"><a
+            href="{{ url('admin/contact-us') }}">Contact Us</a></div>
 </div>
